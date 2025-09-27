@@ -12,10 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageSelectionScreen() {
+fun LanguageSelectionScreen(modifier: Modifier = Modifier,navController: NavController) {
     var selectedLanguage by remember { mutableStateOf("English") }
 
     val languages = listOf(
@@ -92,7 +93,7 @@ fun LanguageSelectionScreen() {
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { /* Handle continue action */ },
+            onClick = {navController.navigate("loginRoutes")  },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),

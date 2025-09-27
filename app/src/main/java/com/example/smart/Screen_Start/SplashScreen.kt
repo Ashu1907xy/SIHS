@@ -27,11 +27,12 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.smart.Authentation.ViewModel.AuthViewModel
 import com.example.smart.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(modifier: Modifier = Modifier,navController: NavController) {
 
     val alpha = remember {
         Animatable(0f)
@@ -42,8 +43,8 @@ fun SplashScreen() {
         alpha.animateTo(1f ,animationSpec = tween(2500))
 
         delay(3000)
-        //navController.popBackStack()
-        //navController.navigate(Routes.MainScreenRoutes)
+        navController.navigate("selectLanguageRoutes")
+
     }
 
     Column(modifier = Modifier
