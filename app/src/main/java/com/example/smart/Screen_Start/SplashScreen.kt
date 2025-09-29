@@ -1,5 +1,6 @@
 package com.example.smart.Screen_Start
 
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -15,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -27,23 +30,35 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.smart.Authentation.ViewModel.AuthState
 import com.example.smart.Authentation.ViewModel.AuthViewModel
 import com.example.smart.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(modifier: Modifier = Modifier,navController: NavController) {
+fun SplashScreen(modifier: Modifier = Modifier,navController: NavController ,authViewModel: AuthViewModel) {
+val context = LocalContext.current
+    val authState = authViewModel.authState.observeAsState() // change
 
     val alpha = remember {
         Animatable(0f)
     }
 
+
     LaunchedEffect(key1 = true) {
 
         alpha.animateTo(1f ,animationSpec = tween(2500))
 
-        delay(3000)
-        navController.navigate("selectLanguageRoutes")
+        delay(1000)
+
+
+        when(authState.value){
+            // change
+            is AuthState.Authenticated -> navController.navigate("multi")
+            is AuthState.Error -> Toast.makeText(context,
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            else -> navController.navigate("loginRoutes")
+        }
 
     }
 
