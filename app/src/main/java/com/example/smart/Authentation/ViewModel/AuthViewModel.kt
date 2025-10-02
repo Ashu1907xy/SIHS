@@ -2,18 +2,20 @@ package com.example.smart.Authentation.ViewModel
 
 
 import android.os.Message
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class AuthViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
 
@@ -21,12 +23,14 @@ class AuthViewModel : ViewModel() {
         checkAuthStatus()
     }
 
-    fun checkAuthStatus(){
-        if(auth.currentUser==null){
+    fun checkAuthStatus() {
+        viewModelScope.launch {
+        if (auth.currentUser == null) {
             _authState.value = AuthState.Unauthenticated
-        }else{
+        } else {
             _authState.value = AuthState.Authenticated
         }
+    }
     }
 
     fun login(email : String,password : String){
@@ -38,7 +42,11 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword(email,password)
             .addOnCompleteListener{task->
                 if (task.isSuccessful){
+
                     _authState.value = AuthState.Authenticated
+
+
+
                 }else{
                     _authState.value = AuthState.Error(task.exception?.message?:"Something went wrong")
                 }

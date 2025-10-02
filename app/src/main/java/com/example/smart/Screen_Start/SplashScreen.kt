@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,49 +37,61 @@ import com.example.smart.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(modifier: Modifier = Modifier,navController: NavController ,authViewModel: AuthViewModel) {
-val context = LocalContext.current
+fun SplashScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel,
+) {
+    val context = LocalContext.current
     val authState = authViewModel.authState.observeAsState() // change
 
     val alpha = remember {
         Animatable(0f)
     }
 
-
     LaunchedEffect(key1 = true) {
 
-        alpha.animateTo(1f ,animationSpec = tween(2500))
+        alpha.animateTo(1f, animationSpec = tween(2500))
 
-        delay(1000)
+        delay(3000)
+        navController.popBackStack()
 
 
-        when(authState.value){
+        when (authState.value) {
             // change
             is AuthState.Authenticated -> navController.navigate("multi")
-            is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            is AuthState.Error -> Toast.makeText(
+                context,
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
+            ).show()
+
             else -> navController.navigate("loginRoutes")
         }
 
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center)
+        verticalArrangement = Arrangement.Center
+    )
     {
-        LoaderAnimation(modifier = Modifier.size(400.dp),
+        LoaderAnimation(
+            modifier = Modifier.size(400.dp),
             anim = R.raw.kishan
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(
-            text = "Let's Make An App "
-            , modifier = Modifier
+            text = "KISHAN SATHI",
+            modifier = Modifier
                 .alpha(alpha.value)
-                .background(Color.Red)
-                .padding(10.dp),
-            fontSize = 32.sp ,
+                .background(Color(0xFF43A047))
+                .padding(20.dp),
+
+            fontSize = 32.sp,
+
 
             )
 
@@ -86,10 +99,14 @@ val context = LocalContext.current
 }
 
 @Composable
-fun LoaderAnimation(modifier: Modifier = Modifier , anim : Int ) {
+fun LoaderAnimation(modifier: Modifier = Modifier, anim: Int) {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(anim))
 
-    LottieAnimation(composition = composition, iterations = LottieConstants.IterateForever , modifier = modifier)
+    LottieAnimation(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        modifier = modifier
+    )
 
 
 }

@@ -1,9 +1,13 @@
 package com.example.smart.Authentation.Screen
 
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +23,7 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -47,192 +52,155 @@ import com.example.smart.Authentation.ViewModel.AuthViewModel
 import com.example.smart.R
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun LoginSignScreen(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
     var isLogin by remember { mutableStateOf(true) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-
-
-
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
+        LaunchedEffect(authState.value) {
+            when (authState.value) {
+                // change
+                is AuthState.Authenticated -> navController.navigate("multi")
+                is AuthState.Error -> Toast.makeText(
+                    context,
+                    (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
+                ).show()
 
-    LaunchedEffect(authState.value) {
-        when(authState.value){
-            // change
-            is AuthState.Authenticated -> navController.navigate("multi")
-            is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
-            else -> Unit
+                else -> Unit
+            }
         }
-    }
-
-
-
-    //  var confirmPassword by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Title
-        Icon(
-            painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            modifier = Modifier.size(150.dp)
-        )
-
-
-//        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = "Kishan Sathi",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1565C0)
-        )
-//        Text(
-//            text = "Looking for a next Phone",
-//            fontSize = 14.sp,
-//            color = Color.Gray
-//        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Toggle buttons (Login / Sign Up)
-
-
-
-
-        Row(
+     Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(Color(0xFFE3F2FD))
-                .padding(4.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { isLogin = true },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isLogin) Color(0xFF1565C0) else Color.Transparent,
-                    contentColor = if (isLogin) Color.White else Color.Black
-                ),
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(50)
+            // Title
+            Icon(
+                painterResource(R.drawable.ic_launcher_background),
+                contentDescription = null,
+                modifier = Modifier.size(150.dp)
+            )
+         Text(
+                text = "Kishan Sathi",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1565C0)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(Color(0xFFE3F2FD))
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Log In")
+                Button(
+                    onClick = { isLogin = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isLogin) Color(0xFF1565C0) else Color.Transparent,
+                        contentColor = if (isLogin) Color.White else Color.Black
+                    ),
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text("Log In")
+                }
+
+                Button(
+                    onClick = { isLogin = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (!isLogin) Color(0xFF1565C0) else Color.Transparent,
+                        contentColor = if (!isLogin) Color.White else Color.Black
+                    ),
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text("Sign In")
+                }
             }
 
-            Button(
-                onClick = { isLogin = false},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (!isLogin) Color(0xFF1565C0) else Color.Transparent,
-                    contentColor = if (!isLogin) Color.White else Color.Black
-                ),
-                modifier = Modifier.weight(1f),
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Email Field
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Username or Email") },
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(50)
-            ) {
-                Text("Sign In")
-            }
-        }
+            )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Email Field
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Username or Email") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(50)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Password Field
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(50),
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-        if (!isLogin) {
-            Spacer(modifier = Modifier.height(12.dp))
-//             Confirm Password Field
-//            OutlinedTextField(
-//                value = confirmPassword,
-//                onValueChange = { confirmPassword = it },
-//                label = { Text("Confirm Password") },
-//                modifier = Modifier.fillMaxWidth(),
-//                shape = RoundedCornerShape(50),
-//                visualTransformation = PasswordVisualTransformation()
-//            )
-        }else{
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Password Field
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(50),
+                visualTransformation = PasswordVisualTransformation()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Submit Button
+            Button(
+                onClick = {
+                    if (isLogin == true) {
+                        authViewModel.login(email, password)
+                    } else {
+                        authViewModel.signup(email, password)
+                        navController.navigate("authScreen")
+                    }
+                }, enabled = authState.value != AuthState.Loading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1565C0)),
+                shape = RoundedCornerShape(50)
+            ) {
+                Text(text = if (isLogin) "Log In" else "Sign In", fontSize = 16.sp)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("or", color = Color.Gray)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+
+            // Social Icons Row
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                IconButton(onClick = { /* Facebook */ }) {
+                    Icon(Icons.Default.Email, contentDescription = "Facebook", tint = Red)
+                }
+                IconButton(onClick = { /* Twitter */ }) {
+                    Icon(Icons.Default.MailOutline, contentDescription = "Google", tint = Red)
+                }
+                IconButton(onClick = { /* Google */ }) {
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = "Twitter",
+                        tint = Color(0xFF1DA1F2)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "Privacy policy · Term of service",
+                color = Color.Gray,
+                fontSize = 12.sp
+            )
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Submit Button
-        Button(
-            onClick = { if (isLogin== true){
-                authViewModel.login(email,password)
-            }
-            else {
-                authViewModel.signup(email, password)
-                navController.navigate("authScreen")
-            } },  enabled = authState.value != AuthState.Loading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1565C0)),
-            shape = RoundedCornerShape(50)
-        ) {
-            Text(text = if (isLogin) "Log In" else "Sign In", fontSize = 16.sp)
-        }
-
-
-
-
-
-
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("or", color = Color.Gray)
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-
-
-        // Social Icons Row
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            IconButton(onClick = { /* Facebook */ }) {
-                Icon(Icons.Default.Email, contentDescription = "Facebook", tint = Red)
-            }
-            IconButton(onClick = { /* Twitter */ }) {
-                Icon(Icons.Default.MailOutline, contentDescription = "Google", tint = Red)
-            }
-            IconButton(onClick = { /* Google */ }) {
-                Icon(Icons.Default.Person, contentDescription = "Twitter", tint = Color(0xFF1DA1F2))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = "Privacy policy · Term of service",
-            color = Color.Gray,
-            fontSize = 12.sp
-        )
     }
-}

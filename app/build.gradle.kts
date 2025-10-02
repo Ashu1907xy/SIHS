@@ -44,8 +44,8 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packaging{
-        resources{
+    packaging {
+        resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
@@ -74,7 +74,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
 
-
     //navigation
     val nav_version = "2.9.0"
 
@@ -84,7 +83,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
 
-    implementation ("com.airbnb.android:lottie-compose:5.2.0")
+    implementation("com.airbnb.android:lottie-compose:5.2.0")
 
 
 
@@ -94,21 +93,11 @@ dependencies {
 
 
 
-
-
-
-
-
-
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 
     // Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
-
-
-
-
-
 
 
 }
