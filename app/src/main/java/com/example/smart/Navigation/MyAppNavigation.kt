@@ -18,15 +18,15 @@ import com.example.smart.DrawerScreens.Inbox
 import com.example.smart.DrawerScreens.MyFarm
 import com.example.smart.DrawerScreens.Profile
 import com.example.smart.DrawerScreens.Setting
-import com.example.smart.FeaturesScreen.AiCropAdvisory
-import com.example.smart.FeaturesScreen.Camera
-import com.example.smart.FeaturesScreen.MarketPrice
-import com.example.smart.FeaturesScreen.News
-import com.example.smart.FeaturesScreen.SoilReport
-import com.example.smart.FeaturesScreen.SoilTest
-import com.example.smart.FeaturesScreen.Support
-import com.example.smart.FeaturesScreen.Weather
+import com.example.smart.FeaturesScreen.AiCropAdvisory.AiCropAdvisory
+import com.example.smart.FeaturesScreen.Camera.Camera
+import com.example.smart.FeaturesScreen.MarketPrice.MarketPrice
+import com.example.smart.FeaturesScreen.News.News
+import com.example.smart.FeaturesScreen.SoilReport.SoilReport
+import com.example.smart.FeaturesScreen.SoilTest.SoilTest
+import com.example.smart.FeaturesScreen.Support.Support
 import com.example.smart.Screen_Start.SplashScreen
+import com.example.weatheropenapi.WeatherApp.WeatherApp
 
 @Composable
 fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel , languageManager: LanguageManager) {
@@ -69,7 +69,7 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel ,
             Support()
         }
         composable ("/weather"){
-            Weather()
+            WeatherApp()
         }
 
         // DrawerRoutes
@@ -98,6 +98,9 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel ,
         composable ("Settings"){
             Setting()
         }
+
+        //features App
+
 
 
     }

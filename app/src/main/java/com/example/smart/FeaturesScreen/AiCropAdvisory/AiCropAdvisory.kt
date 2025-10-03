@@ -1,4 +1,4 @@
-package com.example.smart.FeaturesScreen
+package com.example.smart.FeaturesScreen.AiCropAdvisory
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

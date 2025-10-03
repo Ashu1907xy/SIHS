@@ -1,4 +1,4 @@
-package com.example.smart.FeaturesScreen
+package com.example.smart.FeaturesScreen.MarketPrice
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

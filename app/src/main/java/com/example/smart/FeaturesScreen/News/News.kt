@@ -1,9 +1,9 @@
-package com.example.smart.FeaturesScreen
+package com.example.smart.FeaturesScreen.News
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun Weather(modifier: Modifier = Modifier) {
+fun News(modifier: Modifier = Modifier) {
     
 }

@@ -1,9 +1,9 @@
-package com.example.smart.FeaturesScreen
+package com.example.smart.FeaturesScreen.SoilTest
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SoilReport(modifier: Modifier = Modifier) {
+fun SoilTest(modifier: Modifier = Modifier) {
     
 }

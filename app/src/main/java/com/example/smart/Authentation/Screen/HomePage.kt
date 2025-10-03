@@ -1,6 +1,9 @@
 package com.example.smart.Authentation.Screen
 
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,6 +48,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,6 +65,7 @@ import com.example.smart.MultiLingual.LocalizationHelper
 import com.example.smart.MultiLingual.LocalizationHelper.getCommentsText
 import com.example.smart.MultiLingual.multilingualViewModel
 import com.example.smart.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -121,6 +126,58 @@ fun HomePage(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+
+    val context = LocalContext.current
+    val activity = context as? Activity
+    var backPressedTime by remember { mutableStateOf(0L) }
+    var showToast by remember { mutableStateOf(false) }
+
+
+
+    BackHandler {
+
+        when {
+            // Agar drawer open hai to drawer close kare
+            drawerState.isOpen -> {
+                scope.launch {
+                    drawerState.close()
+                }
+            }
+            // Agar drawer close hai to double back press check kare
+            else -> {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - backPressedTime < 2000) {
+                    // Double press - app ko background mein move kare (minimize)
+                    activity?.moveTaskToBack(true)
+                } else {
+                    backPressedTime = currentTime
+                    Toast.makeText(
+                        context,
+                        "Press back again to minimize app",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showToast = true
+                    scope.launch {
+                        delay(2000)
+                        showToast = false
+                    }
+                }
+            }
+        }
+    }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(showToast) {
+        if (showToast) {
+            snackbarHostState.showSnackbar(
+                message = "Press back again to minimize app",
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
+
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
@@ -169,7 +226,14 @@ fun HomePage(
 
                     drawerItem.forEach {
                         NavigationDrawerItem(
-                            label = { Text(text = LocalizationHelper.getDrawerItemName(currentLanguage, it.textKey)) },
+                            label = {
+                                Text(
+                                    text = LocalizationHelper.getDrawerItemName(
+                                        currentLanguage,
+                                        it.textKey
+                                    )
+                                )
+                            },
                             selected = it == selectedItem,
                             onClick = {
                                 selectedItem = it
